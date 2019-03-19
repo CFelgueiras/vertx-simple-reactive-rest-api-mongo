@@ -27,7 +27,7 @@ public class BookRepository {
         return client.rxFind(COLLECTION_NAME, query)
                 .flatMap(result -> {
                     final List<Book> books = new ArrayList<>();
-                    result.forEach(book -> books.add(book.mapTo(Book.class)));
+                    result.forEach(book -> books.add(new Book(book)));
 
                     return Single.just(books);
                 });
@@ -57,14 +57,25 @@ public class BookRepository {
         final JsonObject query = new JsonObject().put("_id", id);
 
         return client.rxUpdateCollection(COLLECTION_NAME, query, JsonObject.mapFrom(book))
-                .flatMapCompletable(result -> Completable.complete());
-    }
+                .flatMapCompletable(result -> {
+                    if (result.getDocModified() == 1) {
+                        return Completable.complete();
+                    } else {
+                        return Completable.error(new NoSuchElementException("No book with id " + id));
+                    }
+                });    }
 
     public Completable delete(Integer id) {
         final JsonObject query = new JsonObject().put("_id", id);
 
         return client.rxRemoveDocument(COLLECTION_NAME, query)
-                .flatMapCompletable(result -> Completable.complete());
+                .flatMapCompletable(result -> {
+                    if (result.getRemovedCount() == 1) {
+                        return Completable.complete();
+                    } else {
+                        return Completable.error(new NoSuchElementException("No book with id " + id));
+                    }
+                });
     }
 
 }

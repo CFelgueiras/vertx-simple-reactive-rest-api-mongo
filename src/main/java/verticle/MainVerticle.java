@@ -39,10 +39,14 @@ public class MainVerticle extends AbstractVerticle {
 
     // Private methods
     private MongoClient createMongoClient(Vertx vertx, JsonObject config) {
-        System.out.println("CONFIG");
-        config.forEach(k -> System.out.println(k.getKey() + "|" + k.getValue()));
+        final JsonObject configurations = new JsonObject()
+                .put("host", config.getString("HOST"))
+                .put("username", config.getString("USERNAME"))
+                .put("password", config.getString("PASSWORD"))
+                .put("authSource", config.getString("AUTHSOURCE"))
+                .put("db_name", config.getString("DB_NAME"));
 
-        return MongoClient.createShared(vertx, config);
+        return MongoClient.createShared(vertx, configurations);
     }
 
     private Single<HttpServer> createHttpServer(Router router, JsonObject config) {
