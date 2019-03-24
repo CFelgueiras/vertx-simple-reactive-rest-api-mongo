@@ -38,7 +38,7 @@ public class BookHandler {
 
         bookService.insert(book)
                 .subscribe(
-                        result -> onSuccessResponse(rc, 201, book),
+                        result -> onSuccessResponse(rc, 201, result),
                         throwable -> onErrorResponse(rc, 400, throwable));
     }
 
