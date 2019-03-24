@@ -10,26 +10,26 @@ services:
     ports:
       - "27017:27017"
 
-  mongo-seed:
-    build: './src/main/docker/db'
-    links:
+  db-seed:
+    build: './src/main/docker/db-seed'
+    depends_on:
       - db
 
-#  api:
-#    build: .
-#    container_name: book-store-api-mongo
-#    environment:
-#      HOST: "db"
-#      USERNAME: "root"
-#      PASSWORD: "example"
-#      AUTHSOURCE: "admin"
-#      DB_NAME: "books-store"
-#      HTTP_PORT: 8080
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      - db
-#      - mongo-seed
+  api:
+    build: './src/main/docker/api'
+    container_name: book-store-api-mongo
+    environment:
+      HOST: "db"
+      USERNAME: "root"
+      PASSWORD: "example"
+      AUTHSOURCE: "admin"
+      DB_NAME: "book-store"
+      HTTP_PORT: 8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - db-seed
 
 networks:
   default:

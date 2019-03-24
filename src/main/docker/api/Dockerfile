@@ -10,13 +10,11 @@ RUN jlink \
 
 FROM alpine:3.8
 
-ARG JAR_FILE=vertx-simple-async-rest-api-mongo-1.0-SNAPSHOT-fat.jar
 ENV JAVA_HOME=/opt/jdk-11-mini-runtime
 ENV PATH="$PATH:$JAVA_HOME/bin"
 
 COPY --from=jlink-package /opt/jdk-11-mini-runtime /opt/jdk-11-mini-runtime
 
-# Copy executable jar file to image
-COPY target/${JAR_FILE} /target/app.jar
+COPY vertx-simple-async-rest-api-mongo-1.0-SNAPSHOT-fat.jar /target/app.jar
 
 ENTRYPOINT ["java", "-jar", "/target/app.jar"]
