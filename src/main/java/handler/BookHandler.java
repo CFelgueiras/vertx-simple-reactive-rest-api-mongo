@@ -4,6 +4,7 @@ import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.ext.web.RoutingContext;
 import model.Book;
+import org.bson.types.ObjectId;
 import service.BookService;
 
 public class BookHandler {
@@ -22,7 +23,7 @@ public class BookHandler {
     }
 
     public void getOne(RoutingContext rc) {
-        final Integer id = Integer.parseInt(rc.pathParam("id"));
+        final String id = rc.pathParam("id");
         bookService.getById(id)
                 .subscribe(
                         book -> onSuccessResponse(rc, 200, book),
@@ -37,7 +38,7 @@ public class BookHandler {
     }
 
     public void updateOne(RoutingContext rc) {
-        final Integer id = Integer.parseInt(rc.request().getParam("id"));
+        final String id = rc.pathParam("id");
         bookService.update(id, rc.getBodyAsJson().mapTo(Book.class))
                 .subscribe(
                         () -> onSuccessResponse(rc, 204, null),
@@ -45,7 +46,7 @@ public class BookHandler {
     }
 
     public void deleteOne(RoutingContext rc) {
-        final Integer id = Integer.parseInt(rc.pathParam("id"));
+        final String id = rc.pathParam("id");
         bookService.delete(id)
                 .subscribe(
                         () -> onSuccessResponse(rc, 204, null),
@@ -61,7 +62,7 @@ public class BookHandler {
     }
 
     private void onErrorResponse(RoutingContext rc, int status, Throwable throwable) {
-        final JsonObject error = new JsonObject().put("error", throwable.getMessage());
+        final JsonObject error = new JsonObject().put("error", new Exception(throwable).getMessage());
         rc.response()
                 .setStatusCode(status)
                 .putHeader("Content-Type", "application/json")

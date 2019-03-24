@@ -44,7 +44,8 @@ public class MainVerticle extends AbstractVerticle {
                 .put("username", config.getString("USERNAME"))
                 .put("password", config.getString("PASSWORD"))
                 .put("authSource", config.getString("AUTHSOURCE"))
-                .put("db_name", config.getString("DB_NAME"));
+                .put("db_name", config.getString("DB_NAME"))
+                .put("useObjectId", true);
 
         return MongoClient.createShared(vertx, configurations);
     }

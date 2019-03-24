@@ -1,7 +1,6 @@
 package service;
 
 import io.reactivex.Completable;
-import io.reactivex.Maybe;
 import io.reactivex.Single;
 import model.Book;
 import repository.BookRepository;
@@ -21,21 +20,21 @@ public class BookService {
                 .flatMap(result -> Single.just(result));
     }
 
-    public Maybe<Book> getById(Integer id) {
+    public Single<Book> getById(String id) {
         return bookRepository.getById(id)
-                .flatMap(result -> Maybe.just(result));
+                .flatMap(result -> Single.just(result));
     }
 
-    public Maybe<String> insert(Book book) {
+    public Single<String> insert(Book book) {
         return bookRepository.insert(book)
-                .flatMap(result -> Maybe.just(result));
+                .flatMap(result -> Single.just(result));
     }
 
-    public Completable update(Integer id, Book book) {
+    public Completable update(String id, Book book) {
         return bookRepository.update(id, book);
     }
 
-    public Completable delete(Integer id) {
+    public Completable delete(String id) {
         return bookRepository.delete(id);
     }
 

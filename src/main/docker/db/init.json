@@ -852,32 +852,12 @@
   {
     "author": "Leo Tolstoy",
     "country": "Russia",
-    "imageLink": "images/war-and-peace.jpg",
-    "language": "Russian",
-    "link": "https://en.wikipedia.org/wiki/War_and_Peace",
-    "pages": 1296,
-    "title": "War and Peace",
-    "year": 1867
-  },
-  {
-    "author": "Leo Tolstoy",
-    "country": "Russia",
     "imageLink": "images/anna-karenina.jpg",
     "language": "Russian",
     "link": "https://en.wikipedia.org/wiki/Anna_Karenina",
     "pages": 864,
     "title": "Anna Karenina",
     "year": 1877
-  },
-  {
-    "author": "Leo Tolstoy",
-    "country": "Russia",
-    "imageLink": "images/the-death-of-ivan-ilyich.jpg",
-    "language": "Russian",
-    "link": "https://en.wikipedia.org/wiki/The_Death_of_Ivan_Ilyich",
-    "pages": 92,
-    "title": "The Death of Ivan Ilyich",
-    "year": 1886
   },
   {
     "author": "Mark Twain",

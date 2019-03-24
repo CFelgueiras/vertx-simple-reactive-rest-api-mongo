@@ -1,7 +1,6 @@
 package repository;
 
 import io.reactivex.Completable;
-import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.ext.mongo.MongoClient;
@@ -33,39 +32,37 @@ public class BookRepository {
                 });
     }
 
-    public Maybe<Book> getById(Integer id) {
-        final JsonObject query = new JsonObject().put("_id", id);
-        final JsonObject fields = JsonObject.mapFrom(new Book());
+    public Single<Book> getById(String id) {
+         final JsonObject query = new JsonObject().put("_id", id);
 
-        return client.rxFindOne(COLLECTION_NAME, query, fields)
-                .flatMap(result -> {
-                    if (result.size() == 0) {
-                        throw new NoSuchElementException("No book with id " + id);
-                    }
+        return client.rxFindOne(COLLECTION_NAME, query, null)
+                .flatMapSingle(result -> {
+                    final Book book = new Book(result);
 
-                    return Maybe.just(result.mapTo(Book.class));
+                    return Single.just(book);
                 });
     }
 
-    public Maybe<String> insert(Book book) {
+    public Single<String> insert(Book book) {
         return client.rxInsert(COLLECTION_NAME, JsonObject.mapFrom(book))
-                .flatMap(result -> Maybe.just(result));
+                .flatMapSingle(result -> Single.just(result));
 
     }
 
-    public Completable update(Integer id, Book book) {
+    public Completable update(String id, Book book) {
         final JsonObject query = new JsonObject().put("_id", id);
 
-        return client.rxUpdateCollection(COLLECTION_NAME, query, JsonObject.mapFrom(book))
+        return client.rxReplaceDocuments(COLLECTION_NAME, query, JsonObject.mapFrom(book))
                 .flatMapCompletable(result -> {
                     if (result.getDocModified() == 1) {
                         return Completable.complete();
                     } else {
                         return Completable.error(new NoSuchElementException("No book with id " + id));
                     }
-                });    }
+                });
+    }
 
-    public Completable delete(Integer id) {
+    public Completable delete(String id) {
         final JsonObject query = new JsonObject().put("_id", id);
 
         return client.rxRemoveDocument(COLLECTION_NAME, query)

@@ -10,10 +10,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <main-verticle>verticle.MainVerticle</main-verticle>
-        <output-name>${project.artifactId}-${project.version}-fat.jar</output-name>
-
         <vertx-version>3.6.3</vertx-version>
         <maven-shade-plugin-version>3.2.0</maven-shade-plugin-version>
     </properties>
@@ -33,16 +29,15 @@
 
         <dependency>
             <groupId>io.vertx</groupId>
-            <artifactId>vertx-rx-java2</artifactId>
+            <artifactId>vertx-mongo-client</artifactId>
             <version>${vertx-version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.vertx</groupId>
-            <artifactId>vertx-mongo-client</artifactId>
+            <artifactId>vertx-rx-java2</artifactId>
             <version>${vertx-version}</version>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -74,17 +69,12 @@
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
                                         <Main-Class>io.vertx.core.Launcher</Main-Class>
-                                        <Main-Verticle>${main-verticle}</Main-Verticle>
+                                        <Main-Verticle>verticle.MainVerticle</Main-Verticle>
                                     </manifestEntries>
                                 </transformer>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/services/io.vertx.core.spi.VerticleFactory</resource>
-                                </transformer>
                             </transformers>
-                            <artifactSet>
-                            </artifactSet>
-                            <outputFile>${project.build.directory}/${output-name}</outputFile>
+                            <outputFile>src/main/docker/api/${project.artifactId}-${project.version}-fat.jar
+                            </outputFile>
                         </configuration>
                     </execution>
                 </executions>

@@ -1,24 +1,26 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.vertx.core.json.JsonObject;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Book {
 
-    private String id;
+    private String _id;
     private String author;
     private String country;
     private String imageLink;
     private String language;
     private String link;
-    private int pages;
+    private Integer pages;
     private String title;
-    private int year;
+    private Integer year;
 
     public Book() {
     }
 
     public Book(JsonObject jsonObject) {
-        this.id = jsonObject.getJsonObject("_id").getString("$oid");
+        this._id = jsonObject.getString("_id");
         this.author = jsonObject.getString("author");
         this.country = jsonObject.getString("country");
         this.imageLink = jsonObject.getString("imageLink");
@@ -30,11 +32,11 @@ public class Book {
     }
 
     public String getId() {
-        return id;
+        return _id;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this._id = id;
     }
 
     public String getAuthor() {
@@ -77,11 +79,11 @@ public class Book {
         this.link = link;
     }
 
-    public int getPages() {
+    public Integer getPages() {
         return pages;
     }
 
-    public void setPages(int pages) {
+    public void setPages(Integer pages) {
         this.pages = pages;
     }
 
@@ -93,11 +95,11 @@ public class Book {
         this.title = title;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
