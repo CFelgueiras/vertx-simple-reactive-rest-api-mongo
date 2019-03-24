@@ -4,8 +4,9 @@ import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.ext.web.RoutingContext;
 import model.Book;
-import org.bson.types.ObjectId;
 import service.BookService;
+
+import java.util.NoSuchElementException;
 
 public class BookHandler {
 
@@ -18,28 +19,34 @@ public class BookHandler {
     public void getAll(RoutingContext rc) {
         bookService.getAll()
                 .subscribe(
-                        books -> onSuccessResponse(rc, 200, books),
+                        result -> onSuccessResponse(rc, 200, result),
                         throwable -> onErrorResponse(rc, 400, throwable));
     }
 
     public void getOne(RoutingContext rc) {
         final String id = rc.pathParam("id");
+
         bookService.getById(id)
                 .subscribe(
-                        book -> onSuccessResponse(rc, 200, book),
-                        throwable -> onErrorResponse(rc, 400, throwable));
+                        result -> onSuccessResponse(rc, 200, result),
+                        throwable -> onErrorResponse(rc, 400, throwable),
+                        () -> onErrorResponse(rc, 400, new NoSuchElementException("No book with id " + id)));
     }
 
     public void insertOne(RoutingContext rc) {
-        bookService.insert(rc.getBodyAsJson().mapTo(Book.class))
+        final Book book = mapRequestBodyToBook(rc);
+
+        bookService.insert(book)
                 .subscribe(
-                        book -> onSuccessResponse(rc, 201, book),
+                        result -> onSuccessResponse(rc, 201, book),
                         throwable -> onErrorResponse(rc, 400, throwable));
     }
 
     public void updateOne(RoutingContext rc) {
         final String id = rc.pathParam("id");
-        bookService.update(id, rc.getBodyAsJson().mapTo(Book.class))
+        final Book book = mapRequestBodyToBook(rc);
+
+        bookService.update(id, book)
                 .subscribe(
                         () -> onSuccessResponse(rc, 204, null),
                         throwable -> onErrorResponse(rc, 400, throwable));
@@ -47,10 +54,24 @@ public class BookHandler {
 
     public void deleteOne(RoutingContext rc) {
         final String id = rc.pathParam("id");
+
         bookService.delete(id)
                 .subscribe(
                         () -> onSuccessResponse(rc, 204, null),
                         throwable -> onErrorResponse(rc, 400, throwable));
+    }
+
+    // Mapping between book class and request body JSON object
+    private Book mapRequestBodyToBook(RoutingContext rc) {
+        Book book = new Book();
+
+        try {
+            book = rc.getBodyAsJson().mapTo(Book.class);
+        } catch (IllegalArgumentException ex) {
+            onErrorResponse(rc, 400, ex);
+        }
+
+        return book;
     }
 
     // Generic responses
@@ -62,7 +83,8 @@ public class BookHandler {
     }
 
     private void onErrorResponse(RoutingContext rc, int status, Throwable throwable) {
-        final JsonObject error = new JsonObject().put("error", new Exception(throwable).getMessage());
+        final JsonObject error = new JsonObject().put("error", throwable.getMessage());
+
         rc.response()
                 .setStatusCode(status)
                 .putHeader("Content-Type", "application/json")

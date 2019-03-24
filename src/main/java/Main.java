@@ -7,8 +7,11 @@ public class Main {
 
         vertx.rxDeployVerticle(MainVerticle.class.getName())
                 .subscribe(
-                        result -> System.out.println("New verticle started!"),
-                        error -> System.out.println("Error occurred before deploying a new verticle: " + error.getMessage()));
+                        verticle -> System.out.println("New verticle started!"),
+                        throwable -> {
+                            System.out.println("Error occurred before deploying a new verticle: " + throwable.getMessage());
+                            System.exit(1);
+                        });
     }
 
 }

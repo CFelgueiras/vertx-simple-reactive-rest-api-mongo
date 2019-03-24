@@ -1,6 +1,7 @@
 package repository;
 
 import io.reactivex.Completable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.ext.mongo.MongoClient;
@@ -32,21 +33,25 @@ public class BookRepository {
                 });
     }
 
-    public Single<Book> getById(String id) {
-         final JsonObject query = new JsonObject().put("_id", id);
+    public Maybe<Book> getById(String id) {
+        final JsonObject query = new JsonObject().put("_id", id);
 
         return client.rxFindOne(COLLECTION_NAME, query, null)
-                .flatMapSingle(result -> {
+                .flatMap(result -> {
                     final Book book = new Book(result);
 
-                    return Single.just(book);
+                    return Maybe.just(book);
                 });
     }
 
-    public Single<String> insert(Book book) {
+    public Maybe<Book> insert(Book book) {
         return client.rxInsert(COLLECTION_NAME, JsonObject.mapFrom(book))
-                .flatMapSingle(result -> Single.just(result));
+                .flatMap(result -> {
+                    final JsonObject jsonObject = new JsonObject().put("_id", result);
+                    final Book insertedBook = new Book(jsonObject);
 
+                    return Maybe.just(insertedBook);
+                });
     }
 
     public Completable update(String id, Book book) {
