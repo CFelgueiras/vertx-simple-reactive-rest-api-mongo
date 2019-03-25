@@ -44,7 +44,7 @@ After importing "book-store.postman_collection.json" you should be able to run t
 
 * [Java](https://www.java.com/)
 * [Vert.x](https://vertx.io/)
-* [RxJava](http://reactivex.io/)
+* [RxJava 2](http://reactivex.io/)
 * [Maven](https://maven.apache.org/)
 * [MongoDB](https://www.mongodb.com/)
 * [Docker](https://www.docker.com/)
