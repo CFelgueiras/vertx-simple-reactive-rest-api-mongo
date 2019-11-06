@@ -1,4 +1,4 @@
-# Simple reactive REST API using Vert.x, MongoDB and Docker
+# Simple reactive REST API using Java, Vert.x, MongoDB, RxJava2 and Docker
 
 This repository provides a template for building a completely self-contained reactive micro-service using a REST API as a proof of concept.
 
